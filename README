@@ -1,3 +1,10 @@
-Enhance your SQL skills with this repository! 
-Find a variety of SQL exercises and their solutions, covering basic to advanced concepts. 
-Whether you're a beginner or an experienced SQL developer, this repository is your go-to resource for practicing and improving your SQL proficiency. Each exercise includes a clear solution, allowing you to learn and apply SQL effectively. Join us in mastering SQL through hands-on exercises and take your database querying abilities to new heights. Happy coding!
+This repo has several projects and tasks that I did in order to practice SQL. 
+Most of them was done using SQL Server, because it's the RDBMS that I use the most.
+
+## Projects
+
+* Danny's Diner
+* The Report – SQL Task
+
+
+The SQL Tasks are from HackerRank
