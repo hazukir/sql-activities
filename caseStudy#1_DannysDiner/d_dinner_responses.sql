@@ -139,3 +139,32 @@ SELECT
 FROM purchasedItems
 WHERE ranking = 1;
 
+-- 8. What is the total items and amount spent for each member before they became a member?
+
+WITH totalsBeforeJoin AS (
+    SELECT 
+    [sales].[customer_id] AS customerID,
+    [sales].[order_date],
+    [members].[join_date],
+    [sales].[product_id] AS productID,
+    [menu].[product_name] AS productName,
+    [menu].[price] AS price
+FROM sales AS sales
+LEFT JOIN menu
+    ON sales.product_id = menu.product_id
+LEFT JOIN members
+    ON sales.customer_id = members.customer_id
+WHERE sales.order_date < members.join_date
+GROUP BY [sales].[customer_id],
+    [sales].[order_date],
+    [sales].[product_id],
+    [menu].[product_name],
+    [menu].[price],
+    [members].[join_date]
+)
+SELECT
+    customerID
+    ,COUNT(productID) totalItems
+    ,SUM(price) AS totalSpent
+FROM totalsBeforeJoin
+GROUP BY customerID;
