@@ -4,6 +4,7 @@ Most of them was done using SQL Server, because it's the RDBMS that I use the mo
 ## Projects
 
 * Danny's Diner
+* Pizza Runner (Ongoing)
 * The Report – SQL Task
 
 
