@@ -30,7 +30,10 @@ GROUP BY r.runner_id;
 
 -- 04 How many of each type of pizza was delivered?
 
-/* ALTER TABLE pizza_names
+/* I altered the pizza_name from TEXT to VARCHAR, but If I did have access to the CRUD operations, I would use
+CAST. In the original form I'd use also CAST in GROUP BY, considering that the changes to the pizza_name occurs only
+when we query the data. 
+ALTER TABLE pizza_names
 ALTER COLUMN pizza_name VARCHAR(25);
 GO */
 
@@ -46,10 +49,42 @@ WHERE ro.duration <> 'null'
 GROUP BY pa.pizza_name;
 
 
+-- 05 How many Vegetarian and Meatlovers were ordered by each customer?
+SELECT 
+	[co].[customer_id],
+	pa.pizza_name,
+	COUNT(co.order_id) AS totalOrders
+FROM customer_orders AS co
+INNER JOIN pizza_names AS pa
+	ON co.pizza_id = pa.pizza_id
+GROUP BY co.customer_id, pa.pizza_name;
+
+
+
+-- 06 What was the maximum number of pizzas delivered in a single order?
+
+WITH PizzaCounts AS (
+    SELECT
+        co.order_id,
+        COUNT(co.pizza_id) AS pizza_count
+    FROM
+        customer_orders co
+    GROUP BY
+        co.order_id
+)
+
+SELECT
+    pc.order_id,
+    pc.pizza_count
+FROM
+    PizzaCounts pc
+WHERE
+    pc.pizza_count = (
+        SELECT MAX(pizza_count) FROM PizzaCounts
+    );
 
 /*
 
-How many Vegetarian and Meatlovers were ordered by each customer?
 What was the maximum number of pizzas delivered in a single order?
 For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
 How many pizzas were delivered that had both exclusions and extras?
