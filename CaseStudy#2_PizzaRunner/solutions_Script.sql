@@ -83,9 +83,30 @@ WHERE
         SELECT MAX(pizza_count) FROM PizzaCounts
     );
 
+
+-- 07 For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
+
+SELECT 
+	co.customer_id
+	,SUM(CASE WHEN
+		co.exclusions IS NOT NULL AND co.exclusions <> 'null' AND LEN(exclusions) > 0
+		OR co.extras IS NOT NULL AND co.extras <> 'null' AND LEN(extras) > 0
+		THEN 1 ELSE 0
+		END) AS deliveryChanges
+
+	,SUM(CASE WHEN
+		co.exclusions IS NOT NULL AND co.exclusions <> 'null' AND LEN(exclusions) > 0
+		OR co.extras IS NOT NULL AND co.extras <> 'null' AND LEN(extras) > 0
+		THEN 0 ELSE 1
+		END) AS NoDeliveryChanges
+FROM [dbo].[customer_orders] co
+JOIN runner_orders AS ro
+	ON co.order_id = ro.order_id
+GROUP BY co.customer_id
+
+
 /*
 
-What was the maximum number of pizzas delivered in a single order?
 For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
 How many pizzas were delivered that had both exclusions and extras?
 What was the total volume of pizzas ordered for each hour of the day?
