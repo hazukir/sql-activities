@@ -84,7 +84,7 @@ WHERE
     );
 
 
--- 07 For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
+-- For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
 
 SELECT 
 	co.customer_id
@@ -105,10 +105,23 @@ JOIN runner_orders AS ro
 GROUP BY co.customer_id
 
 
-/*
 
-For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
-How many pizzas were delivered that had both exclusions and extras?
-What was the total volume of pizzas ordered for each hour of the day?
-What was the volume of orders for each day of the week?
-*/
+
+-- How many pizzas were delivered that had both exclusions and extras?
+SELECT 
+  COUNT(pizza_id) as pizzas_delivered_with_exclusions_and_extras 
+FROM 
+  customer_orders as co 
+  INNER JOIN runner_orders as ro on ro.order_id = co.order_id 
+WHERE 
+  pickup_time<>'null'
+  AND (exclusions IS NOT NULL AND exclusions<>'null' AND LEN(exclusions)>0) 
+  AND (extras IS NOT NULL AND extras<>'null' AND LEN(extras)>0); 
+
+
+-- What was the total volume of pizzas ordered for each hour of the day?
+
+
+
+
+--What was the volume of orders for each day of the week?
