@@ -122,6 +122,19 @@ WHERE
 -- What was the total volume of pizzas ordered for each hour of the day?
 
 
+SELECT 
+	CONCAT(
+		DATEPART(HOUR, order_time),
+									'h') AS [hours]
+	,COUNT(*) AS pizzasOrdered
+FROM [dbo].[customer_orders]
+GROUP BY DATEPART(HOUR, order_time);
 
 
 --What was the volume of orders for each day of the week?
+
+SELECT
+	DATENAME(WEEKDAY, order_time) AS [Day]
+	,COUNT(*) AS pizzasOrdered
+FROM [dbo].[customer_orders]
+GROUP BY DATENAME(WEEKDAY, order_time);
