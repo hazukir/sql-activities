@@ -80,7 +80,28 @@ GROUP BY
 
 
 -- 4. What was the average distance travelled for each customer?
-
+WITH extraction AS (
+  SELECT 
+  co.customer_id AS customer_id, 
+    distance,
+    CASE 
+        WHEN distance = 'null' THEN NULL -- Handle 'null' string
+        ELSE 
+            TRY_CAST(SUBSTRING(distance, PATINDEX('%[0-9.-]%', distance),
+                   CASE WHEN PATINDEX('%[^0-9.-]%', SUBSTRING(distance, PATINDEX('%[0-9.-]%', distance), LEN(distance) + 1)) = 0 THEN LEN(distance) + 1
+                        ELSE PATINDEX('%[^0-9.-]%', SUBSTRING(distance, PATINDEX('%[0-9.-]%', distance), LEN(distance) + 1)) - 1 END) AS DECIMAL(10,2)) -- Extract numbers with decimal points
+    END AS extracted_number
+FROM customer_orders AS co
+INNER JOIN runner_orders AS ro 
+  ON co.order_id = ro.order_id
+)
+SELECT 
+  customer_id,
+  CAST(
+    AVG(extracted_number)
+    AS DECIMAL(5, 2)) AS avg_distance_travelled
+FROM extraction
+GROUP BY customer_id
 
 -- 5. What was the difference between the longest and shortest delivery times for all orders?
 
