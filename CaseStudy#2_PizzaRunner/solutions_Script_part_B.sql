@@ -104,7 +104,22 @@ FROM extraction
 GROUP BY customer_id
 
 -- 5. What was the difference between the longest and shortest delivery times for all orders?
-
+SELECT 
+  MAX(
+    TRY_CONVERT(
+      INT, 
+      REPLACE(duration, '[^0-9]', '')
+    )
+  ) - MIN(
+    TRY_CONVERT(
+      INT, 
+      REPLACE(duration, '[^0-9]', '')
+    )
+  ) AS deliveryTimeDifference 
+FROM 
+  runner_orders 
+WHERE 
+  duration <> 'null';
 
 -- 6. What was the average speed for each runner for each delivery and do you notice any trend for these values?
 
