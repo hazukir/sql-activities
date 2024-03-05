@@ -122,6 +122,13 @@ WHERE
   duration <> 'null';
 
 -- 6. What was the average speed for each runner for each delivery and do you notice any trend for these values?
-
+SELECT 
+  runner_id
+  ,order_id
+  ,TRY_CAST(REPLACE(distance, 'km', '') AS DECIMAL(4, 1)) / 
+  CAST(REPLACE(REPLACE(REPLACE(duration, 'minutes', ''), 'mins', ''), 'minute', '') AS DECIMAL(4, 1)) AS averageSpeedPerDelivery
+from runner_orders
+WHERE duration <> 'null' AND distance <> 'null'
+ORDER BY runner_id, order_id;
 
 -- 7. What is the successful delivery percentage for each runner?
