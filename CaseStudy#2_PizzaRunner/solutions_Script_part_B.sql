@@ -127,8 +127,24 @@ SELECT
   ,order_id
   ,TRY_CAST(REPLACE(distance, 'km', '') AS DECIMAL(4, 1)) / 
   CAST(REPLACE(REPLACE(REPLACE(duration, 'minutes', ''), 'mins', ''), 'minute', '') AS DECIMAL(4, 1)) AS averageSpeedPerDelivery
-from runner_orders
+FROM runner_orders
 WHERE duration <> 'null' AND distance <> 'null'
 ORDER BY runner_id, order_id;
 
+
 -- 7. What is the successful delivery percentage for each runner?
+
+SELECT 
+  runner_id, 
+  COUNT(order_id) AS totalOrders, 
+  SUM(
+    CASE 
+        WHEN pickup_time = 'null' 
+        THEN 0
+        ELSE 1 
+    END
+  ) / COUNT(order_id) AS deliveryPercentage 
+FROM 
+  runner_orders 
+GROUP BY 
+  runner_id
