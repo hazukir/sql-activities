@@ -19,6 +19,25 @@ GROUP BY
 
 -- 2. What was the most commonly added extra?
 
+WITH Extras_CTE AS (
+    SELECT
+        value as extra_id
+    FROM
+        customer_orders
+    CROSS APPLY STRING_SPLIT(COALESCE(extras,''), ',')
+    WHERE
+        extras IS NOT NULL AND extras != '' AND extras != 'null'
+)
+
+SELECT
+    extra_id,
+    COUNT(*) as extras_count
+FROM
+    Extras_CTE
+GROUP BY
+    extra_id
+ORDER BY
+    extras_count DESC;
 
 -- 3. What was the most common exclusion?
 
