@@ -39,7 +39,37 @@ GROUP BY
 ORDER BY
     extras_count DESC;
 
+
+
+
 -- 3. What was the most common exclusion?
+
+
+WITH SplitExclusions AS (
+    SELECT 
+        co.order_id,
+        value AS exclusion
+    FROM 
+        customer_orders AS co
+        CROSS APPLY STRING_SPLIT(co.exclusions, ',') 
+    WHERE 
+        TRIM(value) <> '' AND 
+        co.exclusions != 'null'
+)
+SELECT 
+    CAST(T.topping_name AS VARCHAR(25)) AS topping_name, -- due to to the fact thet topping_name is text format, SQL Server 
+	-- will not allow text to be presented
+    COUNT(SE.order_id) AS exclusions
+FROM 
+    SplitExclusions AS SE
+    INNER JOIN pizza_toppings AS T ON T.topping_id = SE.exclusion
+GROUP BY 
+    CAST(T.topping_name AS VARCHAR(25)) -- same reason as above
+	/* Error: The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator.
+ */
+ORDER BY 
+    exclusions DESC
+OFFSET 0 ROWS FETCH FIRST 1 ROW ONLY;
 
 
 /* 4. Generate an order item for each record in the customers_orders table in the format of one of the following:
